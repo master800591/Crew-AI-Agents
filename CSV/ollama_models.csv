@@ -1,0 +1,9 @@
+Model Name,Description,Use Case
+openhermes,"OpenHermes is an open-source OLLAMA model with focus on creativity and storytelling","Text composition and creative writing"
+solar,"Solar is a dynamic OLLAMA model designed for generating diverse and engaging content","Content generation for social media and marketing"
+alfred,"Alfred is an assistant OLLAMA model that excels at providing helpful and informative responses","Virtual assistant and customer support applications"
+llama-pro,"LLAMA Pro is a professional-grade OLLAMA model optimized for high-performance text generation","Advanced natural language processing tasks and research"
+llama2-uncensored,"LLAMA 2 Uncensored is a raw and unfiltered version of the original LLAMA model","Experimental content generation and research purposes"
+stable-code,"StableCode is a reliable and consistent OLLAMA model known for its robust performance","Business applications and data analysis"
+nomic-embed-text,"NomicEmbedText is an OLLAMA model specialized in embedding text into various contexts","Text embedding and document analysis"
+codellama,"CodeLLAMA is a programming-focused OLLAMA model that assists with coding-related tasks","Code generation, code completion, and software development"
