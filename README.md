@@ -2,11 +2,10 @@
 a large set of Crew ai Agents. these agents can be used for different tasks and projects.
 
 
-119 angels
-39 executives
-59 department managers
-158 employees
 
+total agents 375
 
-total agents 372
+Agents names can be fount in the agent_list.csv
+
+use agent_load.csv to load the agents into your project.
 

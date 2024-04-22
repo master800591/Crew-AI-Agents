@@ -1,13 +1,24 @@
 import csv
 import random
 
-# Read data from CSV file
+
+# create global Vars
+csv_files = ['CSV\Angels.csv', 'CSV\Executives.csv', 'CSV\Dept_managers.csv', 'CSV\Employees.csv']
+agent_load_data = []
+agent_LIST_data = []
 agents = []
 
+
+
+
+
+# creates random int within the min max range given.
 def get_randomint(min,max):
     return random.randint(min, max)
 
 
+
+# creates the agents and adds them. have 3 functions so they can have different presets for now.
 def Create_agent_angels():
     with open('CSV\Angels.csv') as file:
         reader = csv.DictReader(file, delimiter=';')
@@ -111,11 +122,9 @@ def Create_agent_Employees():
 
 
 
-csv_files = ['CSV\Angels.csv', 'CSV\Executives.csv', 'CSV\Dept_managers.csv', 'CSV\Employees.csv']
-
+# creates the load agents. used in the main.py to load agents 
 def CREATE_LOAD_AGENTS():
     # Create agent_load.csv file
-    agent_load_data = []
     for csv_file in csv_files:
         with open(csv_file) as file:
             reader = csv.DictReader(file, delimiter=';')
@@ -123,13 +132,17 @@ def CREATE_LOAD_AGENTS():
                 agent_name = row['Name'].replace(' ', '_').lower()
                 custom_agent_statement = f"custom_{agent_name} = agents.agent_{agent_name}()"
                 print(custom_agent_statement)
-                agent_load_data.append({'Custom_Agent_Statement': custom_agent_statement})
+                agent_load_data.append(custom_agent_statement)
 
-csv_file_path = 'CSV\agent_load.csv'
+csv_file_path = 'CSV\Agent_load.csv'
 
+
+
+
+
+# creates list of agents names. just wanted it may need it later so why not. more data more better!!!!
 def CREATE_AGENTS_LIST():
     # Create agent_load.csv file
-    agent_LIST_data = []
     for csv_file in csv_files:
         with open(csv_file) as file:
             reader = csv.DictReader(file, delimiter=';')
@@ -137,25 +150,27 @@ def CREATE_AGENTS_LIST():
                 agent_name = row['Name'].replace(' ', '_').lower()
                 AGENT_NAME = f"agent_{agent_name}"
                 print(AGENT_NAME)
-                agent_LIST_data.append({AGENT_NAME})
-
-csv_file_path = 'CSV\agent_LIST.csv'
+                agent_LIST_data.append(AGENT_NAME)
 
 
 
+# runs the program have some test stuff and other goodies.
 if __name__ == "__main__":
     print('test')
     print(get_randomint(0,100))
-
-
-
-
-
-
-
+    Create_agent_angels()
+    Create_agent_Employees()
+    Create_agent_Dept_managers()
+    Create_agent_executives()
+    CREATE_LOAD_AGENTS()
+    CREATE_AGENTS_LIST()
     # Write data to agents.py file
-    with open('crews\Agents.py', 'a') as file:
+    with open('Agents.py', 'a') as file:
         file.write('\n\n'.join(agents))
+    with open('CSV\Agent_load.csv', 'a') as file:
+        file.write('\n'.join(agent_load_data))
+    with open('CSV\Agent_LIST.csv', 'a') as file:
+        file.write('\n'.join(agent_LIST_data))
 
 
 
