@@ -1,0 +1,1 @@
+I am creating a list of Department managers in csv format give me a detailed list only of Name;Rank;Abilities;Goal;Backstory  if the name contains a space replace it with _ do not include anything other then the list no header.
