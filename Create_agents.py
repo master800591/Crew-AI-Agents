@@ -156,6 +156,7 @@ def CREATE_AGENTS_LIST():
 
 # runs the program have some test stuff and other goodies.
 if __name__ == "__main__":
+    
     print('test')
     print(get_randomint(0,100))
     Create_agent_angels()
