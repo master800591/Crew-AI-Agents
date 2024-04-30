@@ -1,195 +1,195 @@
-Country, Region, ISO-alpha3
-Afghanistan, Asia, AFG
-Albania, Europe, ALB
-Algeria, Africa, DZA
-Andorra, Europe, AND
-Angola, Africa, AGO
-Antigua and Barbuda, North America, ATG
-Argentina, South America, ARG
-Armenia, Asia, ARM
-Australia, Oceania, AUS
-Austria, Europe, AUT
-Azerbaijan, Asia, AZE
-Bahamas, North America, BHS
-Bahrain, Asia, BHR
-Bangladesh, Asia, BGD
-Barbados, North America, BRB
-Belarus, Europe, BLR
-Belgium, Europe, BEL
-Belize, North America, BLZ
-Benin, Africa, BEN
-Bhutan, Asia, BTN
-Bolivia, South America, BOL
-Bosnia and Herzegovina, Europe, BIH
-Botswana, Africa, BWA
-Brazil, South America, BRA
-Brunei, Asia, BRN
-Bulgaria, Europe, BGR
-Burkina Faso, Africa, BFA
-Burundi, Africa, BDI
-Cabo Verde, Africa, CPV
-Cambodia, Asia, KHM
-Cameroon, Africa, CMR
-Canada, North America, CAN
-Central African Republic, Africa, CAF
-Chad, Africa, TCD
-Chile, South America, CHL
-China, Asia, CHN
-Colombia, South America, COL
-Comoros, Africa, COM
-Congo, Africa, COG
-Costa Rica, North America, CRI
-Croatia, Europe, HRV
-Cuba, North America, CUB
-Cyprus, Europe, CYP
-Czech Republic, Europe, CZE
-Democratic Republic of the Congo, Africa, COD
-Denmark, Europe, DNK
-Djibouti, Africa, DJI
-Dominica, North America, DMA
-Dominican Republic, North America, DOM
-East Timor, Asia, TLS
-Ecuador, South America, ECU
-Egypt, Africa, EGY
-El Salvador, North America, SLV
-Equatorial Guinea, Africa, GNQ
-Eritrea, Africa, ERI
-Estonia, Europe, EST
-Eswatini, Africa, SWZ
-Ethiopia, Africa, ETH
-Fiji, Oceania, FJI
-Finland, Europe, FIN
-France, Europe, FRA
-Gabon, Africa, GAB
-Gambia, Africa, GMB
-Georgia, Asia, GEO
-Germany, Europe, DEU
-Ghana, Africa, GHA
-Greece, Europe, GRC
-Grenada, North America, GRD
-Guatemala, North America, GTM
-Guinea, Africa, GIN
-Guinea-Bissau, Africa, GNB
-Guyana, South America, GUY
-Haiti, North America, HTI
-Honduras, North America, HND
-Hungary, Europe, HUN
-Iceland, Europe, ISL
-India, Asia, IND
-Indonesia, Asia, IDN
-Iran, Asia, IRN
-Iraq, Asia, IRQ
-Ireland, Europe, IRL
-Israel, Asia, ISR
-Italy, Europe, ITA
-Ivory Coast, Africa, CIV
-Jamaica, North America, JAM
-Japan, Asia, JPN
-Jordan, Asia, JOR
-Kazakhstan, Asia, KAZ
-Kenya, Africa, KEN
-Kiribati, Oceania, KIR
-Kuwait, Asia, KWT
-Kyrgyzstan, Asia, KGZ
-Laos, Asia, LAO
-Latvia, Europe, LVA
-Lebanon, Asia, LBN
-Lesotho, Africa, LSO
-Liberia, Africa, LBR
-Libya, Africa, LBY
-Liechtenstein, Europe, LIE
-Lithuania, Europe, LTU
-Luxembourg, Europe, LUX
-Madagascar, Africa, MDG
-Malawi, Africa, MWI
-Malaysia, Asia, MYS
-Maldives, Asia, MDV
-Mali, Africa, MLI
-Malta, Europe, MLT
-Marshall Islands, Oceania, MHL
-Mauritania, Africa, MRT
-Mauritius, Africa, MUS
-Mexico, North America, MEX
-Micronesia, Oceania, FSM
-Moldova, Europe, MDA
-Monaco, Europe, MCO
-Mongolia, Asia, MNG
-Montenegro, Europe, MNE
-Morocco, Africa, MAR
-Mozambique, Africa, MOZ
-Myanmar, Asia, MMR
-Namibia, Africa, NAM
-Nauru, Oceania, NRU
-Nepal, Asia, NPL
-Netherlands, Europe, NLD
-New Zealand, Oceania, NZL
-Nicaragua, North America, NIC
-Niger, Africa, NER
-Nigeria, Africa, NGA
-North Korea, Asia, PRK
-North Macedonia, Europe, MKD
-Norway, Europe, NOR
-Oman, Asia, OMN
-Pakistan, Asia, PAK
-Palau, Oceania, PLW
-Panama, North America, PAN
-Papua New Guinea, Oceania, PNG
-Paraguay, South America, PRY
-Peru, South America, PER
-Philippines, Asia, PHL
-Poland, Europe, POL
-Portugal, Europe, PRT
-Qatar, Asia, QAT
-Romania, Europe, ROU
-Russia, Europe, RUS
-Rwanda, Africa, RWA
-Saint Kitts and Nevis, North America, KNA
-Saint Lucia, North America, LCA
-Saint Vincent and the Grenadines, North America, VCT
-Samoa, Oceania, WSM
-San Marino, Europe, SMR
-Sao Tome and Principe, Africa, STP
-Saudi Arabia, Asia, SAU
-Senegal, Africa, SEN
-Serbia, Europe, SRB
-Seychelles, Africa, SYC
-Sierra Leone, Africa, SLE
-Singapore, Asia, SGP
-Slovakia, Europe, SVK
-Slovenia, Europe, SVN
-Solomon Islands, Oceania, SLB
-Somalia, Africa, SOM
-South Africa, Africa, ZAF
-South Korea, Asia, KOR
-South Sudan, Africa, SSD
-Spain, Europe, ESP
-Sri Lanka, Asia, LKA
-Sudan, Africa, SDN
-Suriname, South America, SUR
-Sweden, Europe, SWE
-Switzerland, Europe, CHE
-Syria, Asia, SYR
-Tajikistan, Asia, TJK
-Tanzania, Africa, TZA
-Thailand, Asia, THA
-Togo, Africa, TGO
-Tonga, Oceania, TON
-Trinidad and Tobago, North America, TTO
-Tunisia, Africa, TUN
-Turkey, Asia, TUR
-Turkmenistan, Asia, TKM
-Tuvalu, Oceania, TUV
-Uganda, Africa, UGA
-Ukraine, Europe, UKR
-United Arab Emirates, Asia, ARE
-United Kingdom, Europe, GBR
-United States, North America, USA
-Uruguay, South America, URY
-Uzbekistan, Asia, UZB
-Vanuatu, Oceania, VUT
-Vatican City, Europe, VAT
-Venezuela, South America, VEN
-Vietnam, Asia, VNM
-Yemen, Asia, YEM
-Zambia, Africa, ZMB
-Zimbabwe, Africa, ZWE
+Country,Region,ISO_alpha3
+Afghanistan,Asia,AFG
+Albania,Europe,ALB
+Algeria,Africa,DZA
+Andorra,Europe,AND
+Angola,Africa,AGO
+AntiguaandBarbuda,NorthAmerica,ATG
+Argentina,SouthAmerica,ARG
+Armenia,Asia,ARM
+Australia,Oceania,AUS
+Austria,Europe,AUT
+Azerbaijan,Asia,AZE
+Bahamas,NorthAmerica,BHS
+Bahrain,Asia,BHR
+Bangladesh,Asia,BGD
+Barbados,NorthAmerica,BRB
+Belarus,Europe,BLR
+Belgium,Europe,BEL
+Belize,NorthAmerica,BLZ
+Benin,Africa,BEN
+Bhutan,Asia,BTN
+Bolivia,SouthAmerica,BOL
+BosniaandHerzegovina,Europe,BIH
+Botswana,Africa,BWA
+Brazil,SouthAmerica,BRA
+Brunei,Asia,BRN
+Bulgaria,Europe,BGR
+BurkinaFaso,Africa,BFA
+Burundi,Africa,BDI
+CaboVerde,Africa,CPV
+Cambodia,Asia,KHM
+Cameroon,Africa,CMR
+Canada,NorthAmerica,CAN
+CentralAfricanRepublic,Africa,CAF
+Chad,Africa,TCD
+Chile,SouthAmerica,CHL
+China,Asia,CHN
+Colombia,SouthAmerica,COL
+Comoros,Africa,COM
+Congo,Africa,COG
+CostaRica,NorthAmerica,CRI
+Croatia,Europe,HRV
+Cuba,NorthAmerica,CUB
+Cyprus,Europe,CYP
+CzechRepublic,Europe,CZE
+DemocraticRepublicoftheCongo,Africa,COD
+Denmark,Europe,DNK
+Djibouti,Africa,DJI
+Dominica,NorthAmerica,DMA
+DominicanRepublic,NorthAmerica,DOM
+EastTimor,Asia,TLS
+Ecuador,SouthAmerica,ECU
+Egypt,Africa,EGY
+ElSalvador,NorthAmerica,SLV
+EquatorialGuinea,Africa,GNQ
+Eritrea,Africa,ERI
+Estonia,Europe,EST
+Eswatini,Africa,SWZ
+Ethiopia,Africa,ETH
+Fiji,Oceania,FJI
+Finland,Europe,FIN
+France,Europe,FRA
+Gabon,Africa,GAB
+Gambia,Africa,GMB
+Georgia,Asia,GEO
+Germany,Europe,DEU
+Ghana,Africa,GHA
+Greece,Europe,GRC
+Grenada,NorthAmerica,GRD
+Guatemala,NorthAmerica,GTM
+Guinea,Africa,GIN
+Guinea-Bissau,Africa,GNB
+Guyana,SouthAmerica,GUY
+Haiti,NorthAmerica,HTI
+Honduras,NorthAmerica,HND
+Hungary,Europe,HUN
+Iceland,Europe,ISL
+India,Asia,IND
+Indonesia,Asia,IDN
+Iran,Asia,IRN
+Iraq,Asia,IRQ
+Ireland,Europe,IRL
+Israel,Asia,ISR
+Italy,Europe,ITA
+IvoryCoast,Africa,CIV
+Jamaica,NorthAmerica,JAM
+Japan,Asia,JPN
+Jordan,Asia,JOR
+Kazakhstan,Asia,KAZ
+Kenya,Africa,KEN
+Kiribati,Oceania,KIR
+Kuwait,Asia,KWT
+Kyrgyzstan,Asia,KGZ
+Laos,Asia,LAO
+Latvia,Europe,LVA
+Lebanon,Asia,LBN
+Lesotho,Africa,LSO
+Liberia,Africa,LBR
+Libya,Africa,LBY
+Liechtenstein,Europe,LIE
+Lithuania,Europe,LTU
+Luxembourg,Europe,LUX
+Madagascar,Africa,MDG
+Malawi,Africa,MWI
+Malaysia,Asia,MYS
+Maldives,Asia,MDV
+Mali,Africa,MLI
+Malta,Europe,MLT
+MarshallIslands,Oceania,MHL
+Mauritania,Africa,MRT
+Mauritius,Africa,MUS
+Mexico,NorthAmerica,MEX
+Micronesia,Oceania,FSM
+Moldova,Europe,MDA
+Monaco,Europe,MCO
+Mongolia,Asia,MNG
+Montenegro,Europe,MNE
+Morocco,Africa,MAR
+Mozambique,Africa,MOZ
+Myanmar,Asia,MMR
+Namibia,Africa,NAM
+Nauru,Oceania,NRU
+Nepal,Asia,NPL
+Netherlands,Europe,NLD
+NewZealand,Oceania,NZL
+Nicaragua,NorthAmerica,NIC
+Niger,Africa,NER
+Nigeria,Africa,NGA
+NorthKorea,Asia,PRK
+NorthMacedonia,Europe,MKD
+Norway,Europe,NOR
+Oman,Asia,OMN
+Pakistan,Asia,PAK
+Palau,Oceania,PLW
+Panama,NorthAmerica,PAN
+PapuaNewGuinea,Oceania,PNG
+Paraguay,SouthAmerica,PRY
+Peru,SouthAmerica,PER
+Philippines,Asia,PHL
+Poland,Europe,POL
+Portugal,Europe,PRT
+Qatar,Asia,QAT
+Romania,Europe,ROU
+Russia,Europe,RUS
+Rwanda,Africa,RWA
+SaintKittsandNevis,NorthAmerica,KNA
+SaintLucia,NorthAmerica,LCA
+SaintVincentandtheGrenadines,NorthAmerica,VCT
+Samoa,Oceania,WSM
+SanMarino,Europe,SMR
+SaoTomeandPrincipe,Africa,STP
+SaudiArabia,Asia,SAU
+Senegal,Africa,SEN
+Serbia,Europe,SRB
+Seychelles,Africa,SYC
+SierraLeone,Africa,SLE
+Singapore,Asia,SGP
+Slovakia,Europe,SVK
+Slovenia,Europe,SVN
+SolomonIslands,Oceania,SLB
+Somalia,Africa,SOM
+SouthAfrica,Africa,ZAF
+SouthKorea,Asia,KOR
+SouthSudan,Africa,SSD
+Spain,Europe,ESP
+SriLanka,Asia,LKA
+Sudan,Africa,SDN
+Suriname,SouthAmerica,SUR
+Sweden,Europe,SWE
+Switzerland,Europe,CHE
+Syria,Asia,SYR
+Tajikistan,Asia,TJK
+Tanzania,Africa,TZA
+Thailand,Asia,THA
+Togo,Africa,TGO
+Tonga,Oceania,TON
+TrinidadandTobago,NorthAmerica,TTO
+Tunisia,Africa,TUN
+Turkey,Asia,TUR
+Turkmenistan,Asia,TKM
+Tuvalu,Oceania,TUV
+Uganda,Africa,UGA
+Ukraine,Europe,UKR
+UnitedArabEmirates,Asia,ARE
+UnitedKingdom,Europe,GBR
+UnitedStates,NorthAmerica,USA
+Uruguay,SouthAmerica,URY
+Uzbekistan,Asia,UZB
+Vanuatu,Oceania,VUT
+VaticanCity,Europe,VAT
+Venezuela,SouthAmerica,VEN
+Vietnam,Asia,VNM
+Yemen,Asia,YEM
+Zambia,Africa,ZMB
+Zimbabwe,Africa,ZWE

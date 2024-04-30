@@ -4,6 +4,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization, hashes
 import hashlib
 import base64
+from flask import Flask, render_template, request
 import csv
 import os
 import uuid
@@ -111,21 +112,25 @@ def get_country_info():
     
     code_input = input("Enter the three-letter country code: ").upper()
     
-    for country, region, code in data_list:
-        if code == code_input:
+    print("Debug: Input code:", code_input)
+    
+    for country, region, iso_alpha3 in data_list:
+        print("Debug: Checking entry -", iso_alpha3, country, region)
+        if iso_alpha3 == code_input:
             return region, country
-    return "Country not found"
+    
+    return None, "Country not found"
 
+# Test the function
 region, country = get_country_info()
-print(f"Region: {region}\nCountry: {country}")
-
-
+print("Region:", region)
+print("Country:", country)
 
 
 
 def signup():
 
-    Account_ID = get_uuid()
+    Account_ID = str(get_uuid())
     first_name = input("Enter first name: ").title()
     last_name = input("Enter last name: ").title()
     email = input("Enter email address: ").lower()
@@ -139,6 +144,8 @@ def signup():
         return
     # gets region and country of the user. 
     region, country = get_country_info()
+
+
 
     pwd = input("Enter password: ")
     conf_pwd = input("Confirm password: ")
@@ -162,6 +169,8 @@ def signup():
         credentials_data.append({
             "account_id": Account_ID,
             "full_name": full_name,
+            "first_name": first_name,
+            "last_name": last_name,
             "email": email,
             "date_of_birth": dob,
             "region":region,
@@ -203,23 +212,23 @@ def login():
     
 
 
-def main():
-    print("Welcome to the program.")
-    user = None
-    while not user:
-        choice = input("Do you want to login or signup? (login/signup): ")
-        if choice.lower() == "login":
-            user = login()
-        elif choice.lower() == "signup":
-            signup()
-        else:
-            print("Invalid choice. Please try again.")
+app = Flask(__name__)
 
-    # Add code here to execute other programs that require authentication
-    print(get_user_full_name(user))
-    print(get_user_email(user))
-    print(get_user_public_key(user))
+# Existing route for signup
+@app.route('/signup', methods=['GET', 'POST'])
+def signup_view():
+    if request.method == 'POST':
+        signup()
+    return render_template('signup.html')
 
+# Existing route for login
+@app.route('/login', methods=['GET', 'POST'])
+def login_view():
+    if request.method == 'POST':
+        user = login()
+        if user:
+            return render_template('profile.html', user=user)
+    return render_template('login.html')
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    app.run(debug=True)
