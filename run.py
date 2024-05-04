@@ -10,10 +10,11 @@ import os
 import string
 import uuid
 import random
+from datetime import datetime
 import pyttsx3
 
 
-
+# ANSI escape codes for text colors
 
 class colors:
     RED = '\033[91m'
@@ -32,6 +33,12 @@ class colors:
     LIGHT_MAGENTA = '\033[35m'
     LIGHT_CYAN = '\033[36m'
     LIGHT_GRAY = '\033[37m'
+    WARNING = '\033[93m'
+    INFO = '\033[96m'
+    TITLE = '\033[95m'
+    MENU = '\033[94m'
+    BACKGROUND_YELLOW = '\033[43m'
+    BACKGROUND_CYAN = '\033[46m'
     END = '\033[0m'
 
 
@@ -121,8 +128,8 @@ def get_user_public_key(user):
 
 def print_ct(text, color):
     print(f"{color}{text}{colors.END}")
-    engine.say(text)
-    engine.runAndWait()
+    #engine.say(text)     #disabled for speed and testing
+    #engine.runAndWait()   #disabled for speed and testing
 
 
 def verify_password(password, hashed_password):
@@ -190,21 +197,28 @@ def get_country_info():
     
     code_input = input("Enter the three-letter country code: ").upper()
     
-    print("Debug: Input code:", code_input)
+    #print("Debug: Input code:", code_input)      #debug code 
     
     for country, region, iso_alpha3 in data_list:
-        print("Debug: Checking entry -", iso_alpha3, country, region)
+        #print("Debug: Checking entry -", iso_alpha3, country, region)    #debug code
         if iso_alpha3 == code_input:
             return region, country
     
     return None, "Country not found"
 
 
-# Test the function
+# Test the function and to see if how sets the information for the vars. 
 #region, country = get_country_info()
 #print("Region:", region)
 #print("Country:", country)
 
+
+def calculate_age(dob):
+    today = datetime.date.today()
+    print(today)
+    dob = datetime.strptime(dob, "%Y/%m/%d").date()
+    age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+    return age
 
 
 def signup(account_type):
@@ -220,6 +234,10 @@ def signup(account_type):
     dob = input("Enter date of birth (YYYY/MM/DD): ")
     if not re.match(r"\d{4}/\d{2}/\d{2}", dob):
         print("Invalid date of birth format. Please use YYYY/MM/DD.")
+        return
+    age = calculate_age(dob)
+    if age < 18:
+        print("You must be at least 18 years old to register on this platform.")
         return
     # gets region and country of the user. 
     region, country = get_country_info()
@@ -347,21 +365,41 @@ csv_file_path = os.path.join("CSV", "data", "us_gov_Domains.csv")
 #create_batch_government_accounts_from_csv(csv_file_path)
 
 
+
+
+#### MENU OPERATIONS!!!! ######
+
+def individual_menu(user):
+    print("Individual ussers Menu Options:")
+    # Add options specific to individual accounts
+
+def government_agency_menu(user):
+    print("Government Agency Menu Options:")
+    # Add options specific to government agency accounts
+
+def company_menu(user):
+    print("Company Menu Options:")
+    # Add options specific to company accounts
+
+
+
+
+
+
 def display_menu():
-    print("Welcome to the registration portal.")
-    print("Please select your account type:")
-    print("1. Individual")
-    print("2. Government Agency")
-    print("3. Company")
-    print("4. policies")
+    print_ct("Welcome to the registration portal.", colors.TITLE)
+    print_ct("Please select your account type:", colors.MENU)
+    print_ct("1. Individual NOT a PUBLIC OFFICIAL ", colors.MENU)
+    print_ct("2. Government OFFICIAL", colors.MENU)
+    print_ct("4. return to main menu", colors.MENU)
     choice = input("Enter your choice (1/2/3/4): ")
     
     if choice == '1':
         signup("individual")
     elif choice == '2':
-        signup("government agency")
-    elif choice == '3':
-        signup("company")
+        signup("gov_Official")
+    elif choice == '4':
+        main()
     else:
         print("Invalid choice. Please select a valid option.")
 
@@ -369,21 +407,31 @@ def main():
     clear_screen()
     accept_or_exit()
     clear_screen()
-    print("Welcome to the TBD.")
+    print_ct("Welcome to the TBD.", colors.TITLE)
     user = None
     while not user:
-        choice = input("Do you want to login or sign up? (login/signup): ")
+        choice = input("Do you want to login,sign up or exit? (login/signup/exit): ")
         if choice.lower() == "login":
             user = login()
         elif choice.lower() == "signup":
             display_menu()  # Display account type selection menu
+        elif choice.lower() == "exit":
+            exit()
         else:
-            print("Invalid choice. Please try again.")
+            print_ct("Invalid choice. Please try again.", colors.WARNING)
 
     # Add code here to execute other programs that require authentication
     print(get_user_full_name(user))
-    print(get_user_email(user))
-    print(get_user_public_key(user))
-
+    account_type = user.get("account_type")  # Get user's account type
+    print(f"Welcome, {get_user_full_name(user)}!")
+    
+    if account_type == "individual":
+        individual_menu(user)
+    elif account_type == "government agency":
+        government_agency_menu(user)
+    elif account_type == "company":
+        company_menu(user)
+    else:
+        print("Invalid account type. Please contact support.")
 if __name__ == "__main__":
     main()
