@@ -4,23 +4,23 @@ Albania,Europe,ALB
 Algeria,Africa,DZA
 Andorra,Europe,AND
 Angola,Africa,AGO
-AntiguaandBarbuda,NorthAmerica,ATG
+Antiguaand Barbuda,North America,ATG
 Argentina,SouthAmerica,ARG
 Armenia,Asia,ARM
 Australia,Oceania,AUS
 Austria,Europe,AUT
 Azerbaijan,Asia,AZE
-Bahamas,NorthAmerica,BHS
+Bahamas,North America,BHS
 Bahrain,Asia,BHR
 Bangladesh,Asia,BGD
-Barbados,NorthAmerica,BRB
+Barbados,North America,BRB
 Belarus,Europe,BLR
 Belgium,Europe,BEL
-Belize,NorthAmerica,BLZ
+Belize,North America,BLZ
 Benin,Africa,BEN
 Bhutan,Asia,BTN
 Bolivia,SouthAmerica,BOL
-BosniaandHerzegovina,Europe,BIH
+Bosniaand Herzegovina,Europe,BIH
 Botswana,Africa,BWA
 Brazil,SouthAmerica,BRA
 Brunei,Asia,BRN
@@ -30,29 +30,29 @@ Burundi,Africa,BDI
 CaboVerde,Africa,CPV
 Cambodia,Asia,KHM
 Cameroon,Africa,CMR
-Canada,NorthAmerica,CAN
-CentralAfricanRepublic,Africa,CAF
+Canada,North America,CAN
+Central African Republic,Africa,CAF
 Chad,Africa,TCD
 Chile,SouthAmerica,CHL
 China,Asia,CHN
 Colombia,SouthAmerica,COL
 Comoros,Africa,COM
 Congo,Africa,COG
-CostaRica,NorthAmerica,CRI
+CostaRica,North America,CRI
 Croatia,Europe,HRV
-Cuba,NorthAmerica,CUB
+Cuba,North America,CUB
 Cyprus,Europe,CYP
-CzechRepublic,Europe,CZE
-DemocraticRepublicoftheCongo,Africa,COD
+Czech Republic,Europe,CZE
+Democratic Republic of the Congo,Africa,COD
 Denmark,Europe,DNK
 Djibouti,Africa,DJI
-Dominica,NorthAmerica,DMA
-DominicanRepublic,NorthAmerica,DOM
+Dominica,North America,DMA
+Dominican Republic,North America,DOM
 EastTimor,Asia,TLS
 Ecuador,SouthAmerica,ECU
 Egypt,Africa,EGY
-ElSalvador,NorthAmerica,SLV
-EquatorialGuinea,Africa,GNQ
+ElSalvador,North America,SLV
+Equatorial Guinea,Africa,GNQ
 Eritrea,Africa,ERI
 Estonia,Europe,EST
 Eswatini,Africa,SWZ
@@ -66,13 +66,13 @@ Georgia,Asia,GEO
 Germany,Europe,DEU
 Ghana,Africa,GHA
 Greece,Europe,GRC
-Grenada,NorthAmerica,GRD
-Guatemala,NorthAmerica,GTM
+Grenada,North America,GRD
+Guatemala,North America,GTM
 Guinea,Africa,GIN
 Guinea-Bissau,Africa,GNB
 Guyana,SouthAmerica,GUY
-Haiti,NorthAmerica,HTI
-Honduras,NorthAmerica,HND
+Haiti,North America,HTI
+Honduras,North America,HND
 Hungary,Europe,HUN
 Iceland,Europe,ISL
 India,Asia,IND
@@ -83,7 +83,7 @@ Ireland,Europe,IRL
 Israel,Asia,ISR
 Italy,Europe,ITA
 IvoryCoast,Africa,CIV
-Jamaica,NorthAmerica,JAM
+Jamaica,North America,JAM
 Japan,Asia,JPN
 Jordan,Asia,JOR
 Kazakhstan,Asia,KAZ
@@ -106,10 +106,10 @@ Malaysia,Asia,MYS
 Maldives,Asia,MDV
 Mali,Africa,MLI
 Malta,Europe,MLT
-MarshallIslands,Oceania,MHL
+Marshall Islands,Oceania,MHL
 Mauritania,Africa,MRT
 Mauritius,Africa,MUS
-Mexico,NorthAmerica,MEX
+Mexico,North America,MEX
 Micronesia,Oceania,FSM
 Moldova,Europe,MDA
 Monaco,Europe,MCO
@@ -123,7 +123,7 @@ Nauru,Oceania,NRU
 Nepal,Asia,NPL
 Netherlands,Europe,NLD
 NewZealand,Oceania,NZL
-Nicaragua,NorthAmerica,NIC
+Nicaragua,North America,NIC
 Niger,Africa,NER
 Nigeria,Africa,NGA
 NorthKorea,Asia,PRK
@@ -132,7 +132,7 @@ Norway,Europe,NOR
 Oman,Asia,OMN
 Pakistan,Asia,PAK
 Palau,Oceania,PLW
-Panama,NorthAmerica,PAN
+Panama,North America,PAN
 PapuaNewGuinea,Oceania,PNG
 Paraguay,SouthAmerica,PRY
 Peru,SouthAmerica,PER
@@ -143,13 +143,13 @@ Qatar,Asia,QAT
 Romania,Europe,ROU
 Russia,Europe,RUS
 Rwanda,Africa,RWA
-SaintKittsandNevis,NorthAmerica,KNA
-SaintLucia,NorthAmerica,LCA
-SaintVincentandtheGrenadines,NorthAmerica,VCT
+Saint Kitts and Nevis,North America,KNA
+Saint Lucia,North America,LCA
+Saint Vincent and the Grenadines,North America,VCT
 Samoa,Oceania,WSM
-SanMarino,Europe,SMR
-SaoTomeandPrincipe,Africa,STP
-SaudiArabia,Asia,SAU
+San Marino,Europe,SMR
+Sao Tomeand Principe,Africa,STP
+Saudi Arabia,Asia,SAU
 Senegal,Africa,SEN
 Serbia,Europe,SRB
 Seychelles,Africa,SYC
@@ -165,7 +165,7 @@ SouthSudan,Africa,SSD
 Spain,Europe,ESP
 SriLanka,Asia,LKA
 Sudan,Africa,SDN
-Suriname,SouthAmerica,SUR
+Suriname,South America,SUR
 Sweden,Europe,SWE
 Switzerland,Europe,CHE
 Syria,Asia,SYR
@@ -174,21 +174,21 @@ Tanzania,Africa,TZA
 Thailand,Asia,THA
 Togo,Africa,TGO
 Tonga,Oceania,TON
-TrinidadandTobago,NorthAmerica,TTO
+Trinidadand Tobago,North America,TTO
 Tunisia,Africa,TUN
 Turkey,Asia,TUR
 Turkmenistan,Asia,TKM
 Tuvalu,Oceania,TUV
 Uganda,Africa,UGA
 Ukraine,Europe,UKR
-UnitedArabEmirates,Asia,ARE
-UnitedKingdom,Europe,GBR
-UnitedStates,NorthAmerica,USA
-Uruguay,SouthAmerica,URY
+United Arab Emirates,Asia,ARE
+United Kingdom,Europe,GBR
+United States,North America,USA
+Uruguay,South America,URY
 Uzbekistan,Asia,UZB
 Vanuatu,Oceania,VUT
 VaticanCity,Europe,VAT
-Venezuela,SouthAmerica,VEN
+Venezuela,South America,VEN
 Vietnam,Asia,VNM
 Yemen,Asia,YEM
 Zambia,Africa,ZMB
