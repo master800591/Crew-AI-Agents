@@ -7,12 +7,56 @@ import base64
 from flask import Flask, render_template, request
 import csv
 import os
+import string
 import uuid
+import random
+import pyttsx3
+
+
+
+
+class colors:
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    MAGENTA = '\033[95m'
+    CYAN = '\033[96m'
+    WHITE = '\033[97m'
+    BLACK = '\033[30m'
+    GRAY = '\033[90m'
+    LIGHT_RED = '\033[31m'
+    LIGHT_GREEN = '\033[32m'
+    LIGHT_YELLOW = '\033[33m'
+    LIGHT_BLUE = '\033[34m'
+    LIGHT_MAGENTA = '\033[35m'
+    LIGHT_CYAN = '\033[36m'
+    LIGHT_GRAY = '\033[37m'
+    END = '\033[0m'
+
+
+engine = pyttsx3.init()
 
 def get_uuid():
     new_uuid = uuid.uuid4()
     return new_uuid
 
+
+
+def clear_screen():
+    # For Windows
+    if os.name == 'nt':
+        _ = os.system('cls')
+    # For Mac and Linux
+    else:
+        _ = os.system('clear')
+
+
+
+def generate_password(length=12):
+    characters = string.ascii_letters + string.digits + string.punctuation
+    password = ''.join(random.choice(characters) for i in range(length))
+    return password
 
 def generate_key_pair():
     private_key = rsa.generate_private_key(
@@ -58,7 +102,7 @@ def check_names(first_name, last_name, stored_names):
 
 def save_private_key(full_name, private_key):
     private_key_str = private_key
-    with open(f"{full_name}_private_key.pem", "w") as f:
+    with open(f"keys\{full_name}_private_key.pem", "w") as f:
         f.write(private_key_str)
 
 def save_credentials(credentials_data):
@@ -74,6 +118,15 @@ def get_user_email(user):
 
 def get_user_public_key(user):
     return f"{user['public_key']}"
+
+def print_ct(text, color):
+    print(f"{color}{text}{colors.END}")
+    engine.say(text)
+    engine.runAndWait()
+
+
+def verify_password(password, hashed_password):
+    return hashed_password == hash_password(password)
 
 
 def encrypt_data(data, public_key):
@@ -101,6 +154,31 @@ def decrypt_data(encrypted_data, private_key):
     return decrypted_data
 
 
+def print_text_file(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+            print_ct(content, colors.RED)
+    except FileNotFoundError:
+        print("File not found. Please check the file path and try again.")
+
+
+def accept_or_exit():
+    print_text_file("terms_of_service.txt")
+    print_text_file("copyright.txt")
+    choice = input("Do you accept these Terms of Service and policies? (Type 'accept' to proceed or 'exit' to leave): ")
+    
+    if choice.lower() == 'accept':
+        print("Thank you for accepting the Terms of Service. Enjoy using [Your Company/Platform Name]!")
+        # Add your main program logic here
+    elif choice.lower() == 'exit':
+        print("You have chosen to exit. Goodbye!")
+        exit()
+    else:
+        print("Invalid choice. Please type 'accept' to proceed or 'exit' to leave.")
+        accept_or_exit()
+
+
 
 def get_country_info():
     file_path = os.path.join("CSV", "data", "Regions.csv")
@@ -121,14 +199,15 @@ def get_country_info():
     
     return None, "Country not found"
 
+
 # Test the function
-region, country = get_country_info()
-print("Region:", region)
-print("Country:", country)
+#region, country = get_country_info()
+#print("Region:", region)
+#print("Country:", country)
 
 
 
-def signup():
+def signup(account_type):
 
     Account_ID = str(get_uuid())
     first_name = input("Enter first name: ").title()
@@ -145,13 +224,10 @@ def signup():
     # gets region and country of the user. 
     region, country = get_country_info()
 
-
-
     pwd = input("Enter password: ")
     conf_pwd = input("Confirm password: ")
     if conf_pwd == pwd:
         private_key, public_key = generate_key_pair()
-
         hashed_password = hash_password(pwd)
         hashed_password_base64 = base64.b64encode(hashed_password).decode()
 
@@ -167,7 +243,9 @@ def signup():
         full_name = check_names(first_name, last_name, stored_emails)  # corrected variable name
 
         credentials_data.append({
+        
             "account_id": Account_ID,
+            "account_type": account_type,
             "full_name": full_name,
             "first_name": first_name,
             "last_name": last_name,
@@ -208,27 +286,104 @@ def login():
                 return None
 
     print("User not found.")
-    return None
     
 
+    return None
 
-app = Flask(__name__)
 
-# Existing route for signup
-@app.route('/signup', methods=['GET', 'POST'])
-def signup_view():
-    if request.method == 'POST':
-        signup()
-    return render_template('signup.html')
+def create_batch_government_accounts_from_csv(csv_file):
+    #Domain name,Domain type,Agency,Organization name,City,State,Security contact email
+    credentials_data = load_credentials()
 
-# Existing route for login
-@app.route('/login', methods=['GET', 'POST'])
-def login_view():
-    if request.method == 'POST':
-        user = login()
-        if user:
-            return render_template('profile.html', user=user)
-    return render_template('login.html')
+    with open(csv_file, 'r') as file:
+        reader = csv.reader(file)
+        next(reader)  # Skip header row
+        for row in reader:
+            domain_name, domain_type, agency, org_name, city, state, security_email = row
 
-if __name__ == '__main__':
-    app.run(debug=True)
+            print("domain_name", domain_name, "domain_type", domain_type,"agency", agency, org_name, city, state, security_email )
+
+            Account_ID = str(get_uuid())
+            email = security_email.lower()
+            contact_person = security_email
+            region, country = "North America", "United States"   # Assuming this function provides region and country based on location
+
+            pwd = generate_password()  # You may define a function to generate a random password
+            private_key, public_key = generate_key_pair()
+            hashed_password = hash_password(pwd)
+            hashed_password_base64 = base64.b64encode(hashed_password).decode()
+
+            stored_emails = [user["email"] for user in credentials_data]
+
+            if email in stored_emails:
+                print(f"Email '{email}' is already in use. Skipping this agency.")
+                continue
+
+            credentials_data.append({
+                "account_id": Account_ID,
+                "agency_name": org_name,
+                "contact_person": contact_person,
+                "city": city,
+                "city": state,
+                "email": email,
+                "region": region,
+                "country": country,
+                "hashed_password": hashed_password_base64,
+                "public_key": public_key
+            })
+
+            save_private_key(org_name, private_key)
+
+            with open('agencies.csv', mode='a', newline='') as agencies_file:
+                writer = csv.writer(agencies_file)
+                writer.writerow([agency, pwd])  # Write agency name and plain text password to agencies.csv
+
+    save_credentials(credentials_data)
+
+    print("Batch government agency account creation from CSV completed.")
+
+# Example usage of create_batch_government_accounts_from_csv()
+csv_file_path = os.path.join("CSV", "data", "us_gov_Domains.csv")
+#create_batch_government_accounts_from_csv(csv_file_path)
+
+
+def display_menu():
+    print("Welcome to the registration portal.")
+    print("Please select your account type:")
+    print("1. Individual")
+    print("2. Government Agency")
+    print("3. Company")
+    print("4. policies")
+    choice = input("Enter your choice (1/2/3/4): ")
+    
+    if choice == '1':
+        signup("individual")
+    elif choice == '2':
+        signup("government agency")
+    elif choice == '3':
+        signup("company")
+    else:
+        print("Invalid choice. Please select a valid option.")
+
+def main():
+    clear_screen()
+    accept_or_exit()
+    clear_screen()
+    print("Welcome to the TBD.")
+    user = None
+    while not user:
+        choice = input("Do you want to login or sign up? (login/signup): ")
+        if choice.lower() == "login":
+            user = login()
+        elif choice.lower() == "signup":
+            display_menu()  # Display account type selection menu
+        else:
+            print("Invalid choice. Please try again.")
+
+    # Add code here to execute other programs that require authentication
+    print(get_user_full_name(user))
+    print(get_user_email(user))
+    print(get_user_public_key(user))
+
+if __name__ == "__main__":
+    main()

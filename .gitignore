@@ -161,3 +161,5 @@ cython_debug/
 
 #ignore private keys.
 *.pem
+
+/heys
