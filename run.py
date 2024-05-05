@@ -2,6 +2,8 @@ import json
 import re
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.backends import default_backend
+
 import hashlib
 import base64
 from flask import Flask, render_template, request
@@ -44,6 +46,8 @@ class colors:
 
 engine = pyttsx3.init()
 roles_data_file = "roles_permissions.json"
+user_credentials_file = "UserCredentials.csv" 
+chosen_hash = hashes.SHA256() 
 
 ##### Functions used for displaying, printing, getting, or loading.
 def get_uuid():
@@ -57,6 +61,13 @@ def clear_screen():
     # For Mac and Linux
     else:
         _ = os.system('clear')
+
+
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return json.JSONEncoder.default(self, obj)
 
 
 def get_user_full_name(user):
@@ -106,6 +117,29 @@ def get_roles_from_json(file_path):
 
 
 ##### Encription security and data handling functions ######
+def load_credentials_from_csv(file_path):
+    credentials_data = []
+    try:
+        with open(file_path, 'r') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                credentials_data.append(row)
+    except FileNotFoundError:
+        print("Credentials file not found.")
+    return credentials_data
+
+def save_credentials_to_csv(data, file_path):
+    fieldnames = data[0].keys() if data else []
+    try:
+        with open(file_path, 'w', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            for row in data:
+                writer.writerow(row)
+        print("User credentials data saved to CSV file successfully.")
+    except Exception as e:
+        print("Error saving user credentials to CSV file:", e)
+
 
 def generate_password(length=17):
     characters = string.ascii_letters + string.digits + string.punctuation
@@ -171,60 +205,74 @@ def get_private_key(account_id):
         )
     return private_key
 
+def get_public_key_from_csv(account_id):
+    try:
+        with open(user_credentials_file, mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                if row['account_id'] == account_id:
+                    public_key_str = row['public_key']
+                    public_key = serialization.load_pem_public_key(
+                        public_key_str.encode(),
+                        backend=default_backend()
+                    )
+                    return public_key
+            print(f"Account ID {account_id} not found in the CSV file.")
+            return None
+    except Exception as e:
+        print(f"Error reading CSV file: {e}")
+        return None
+
 def save_credentials(credentials_data):
     with open("credentials.json", "w") as f:
         json.dump(credentials_data, f, indent=4)
 
 def sign_data(account_id, data):
     try:
-        data_bytes = data.encode('utf-8')
+        data_bytes = data
         private_key = get_private_key(account_id)
         signature = private_key.sign(data_bytes,padding.PSS(mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH),hashes.SHA256())
         return signature
     except ValueError as e:
         print("Error loading private key:", e)
 
+def load_account_data(account_id):
+    credentials_data = load_credentials_from_csv(user_credentials_file)
+    
+    for user_data in credentials_data:
+        if user_data["account_id"] == account_id:
+            print(f"Account ID: {user_data['account_id']}")
+            print(f"Account Type: {user_data['account_type']}")
+            print(f"Created On: {user_data['created_on']}")
+            print(f"Full Name: {user_data['full_name']}")
+            print(f"First Name: {user_data['first_name']}")
+            print(f"Last Name: {user_data['last_name']}")
+            print(f"Email: {user_data['email']}")
+            print(f"Role: {user_data['role']}")
+            print(f"Title: {user_data['title']}")
+            print(f"Date of Birth: {user_data['date_of_birth']}")
+            print(f"Region: {user_data['region']}")
+            print(f"Country: {user_data['country']}")
+            print(f"Public Key: {user_data['public_key']}")
 
-def verify_signature(account_id, data, signature):
-    credentials_data = load_credentials()
+            return user_data
     
-    # Find the user with the provided account ID
-    user = next((user for user in credentials_data if user["account_id"] == account_id), None)
-    
-    if user:
-        public_key = user.get("public_key")
-        
-        if public_key:
-            try:
-                public_key_bytes = public_key.encode()
-                public_key_obj = serialization.load_pem_public_key(public_key_bytes)
-                
-                # Convert the data to bytes
-                data_bytes = bytes(data, 'utf-8')
-                
-                # Decode the signature from base64
-                signature_decoded = base64.b64decode(signature.encode())
-                
-                # Verify the signature using the public key
-                public_key_obj.verify(
-                    signature_decoded,
-                    data_bytes,
-                    padding.OAEP(
-                        mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                        algorithm=hashes.SHA256(),
-                        label=None
-                    )
-                )
-                return True  # Signature verification successful
-            except Exception as e:
-                print(f"Signature verification failed: {e}")
-                return False
-        else:
-            print("Public key not found for the user.")
-            return False
-    else:
-        print("User not found with the provided account ID.")
+    print(f"Account with ID {account_id} not found.")
+    return None
+
+
+def verify_Account_signature(account_id, data, signature):
+    try:
+        data_bytes = data
+        public_key = get_public_key_from_csv(account_id)
+        public_key.verify(signature,data_bytes,padding.PSS(mgf=padding.MGF1(hashes.SHA256()),salt_length=padding.PSS.MAX_LENGTH),hashes.SHA256())
+        return True  # Signature verification successful
+    except InvalidSignature:
+        print("Invalid Signature. Verification failed.")
         return False
+    
+
+
 
 
 def verify_password(password, hashed_password):
@@ -344,9 +392,17 @@ def calculate_age(dob):
     except ValueError:
         print("Invalid date format. Please enter the date in the format YYYY/MM/DD.")
         return None
+def check_email_used(email):
+    credentials_data = load_credentials_from_csv(user_credentials_file)
+    stored_emails = [user["email"] for user in credentials_data]
 
+    if email in stored_emails:
+        print("Email is already in use. Please try with a different email.")
+        return True
+    return False
 
 def signup(account_type):
+    credentials_data = load_credentials_from_csv(user_credentials_file)
     roles = get_roles_from_json(roles_data_file)
     Account_ID = str(get_uuid())
     private_key, public_key = generate_key_pair()
@@ -356,166 +412,124 @@ def signup(account_type):
     role_info = roles[role]
     permissions = role_info["permissions"]
     title = role_info["title"]
-    description = role_info["description"]
     first_name = input("Enter first name: ").title()
     last_name = input("Enter last name: ").title()
     email = input("Enter email address: ").lower()
-    if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
-        print("Invalid email address format. Please try again.")
+    
+    if check_email_used(email):
+        print("Email is already in use. Please try with a different email.")
         return
+    
     dob = input("Enter date of birth (YYYY/MM/DD): ")
     age = calculate_age(dob)
-    if age is not None:
-        # Do age verification and user registration based on age
-        if age < 18:
-            print("You must be at least 18 years old to register on this platform.")
-        else:
-            print("Age verification successful. Proceed with registration.")
-    # gets region and country of the user. 
+    
+    if age is not None and age < 18:
+        print("You must be at least 18 years old to register on this platform.")
+        return
+    
     region, country = get_country_info()
     pwd = input("Enter password: ")
     conf_pwd = input("Confirm password: ")
-    if conf_pwd == pwd:
-        hashed_password = hash_password(pwd)
-        hashed_password_base64 = base64.b64encode(hashed_password).decode()
+    
+    if conf_pwd != pwd:
+        print("Passwords do not match.")
+        return
+    
+    hashed_password = hash_password(pwd)
+    hashed_password_base64 = base64.b64encode(hashed_password).decode()
 
-        with open("credentials.json", "r") as f:
-            credentials_data = json.load(f)
-
-        stored_emails = [user["email"] for user in credentials_data]  # corrected variable name
-
-        if email in stored_emails:
-            print("Email is already in use. Please try with a different email.")
-            return
-        Created_date = get_current_datetime()
-        full_name = check_names(first_name, last_name, stored_emails)  # corrected variable name
-        data = {
-            "account_id": Account_ID,
-            "account_type": account_type,
-            "created_on": Created_date,
-            "lastUpdated": Created_date,
-            "full_name": full_name,
-            "first_name": first_name,
-            "last_name": last_name,
-            "email": email,
-            "role": role,
-            "permissions": permissions,
-            "title": title,
-            "date_of_birth": dob,
-            "region":region,
-            "country":country,
-            "hashed_password": hashed_password_base64,
-            "public_key": public_key,
-        }
-        data_str = json.dumps(data)
-        accountSigned = sign_data(Account_ID, data_str)
-
-        credentials_data.append({
-            "account_id": Account_ID,
-            "account_type": account_type,
-            "created_on": Created_date,
-            "lastUpdated": Created_date,
-            "full_name": full_name,
-            "first_name": first_name,
-            "last_name": last_name,
-            "email": email,
-            "role": role,
-            "permissions": permissions,
-            "title": title,
-            "date_of_birth": dob,
-            "region":region,
-            "country":country,
-            "hashed_password": hashed_password_base64,
-            "public_key": public_key,
-            "signature": accountSigned,
-        })
-
-        with open("credentials.json", "w") as f:
-            json.dump(credentials_data, f, indent=4)
-
-        print("You have registered successfully!")
-    else:
-        print("Passwords do not match.\n")
+    today = get_current_date()
+    Created_date = today
+    full_name = check_names(first_name, last_name, [user["email"] for user in credentials_data])
+    print("your full name will be displayed as:", full_name)
 
 
+    hasher = hashes.Hash(chosen_hash)
+    hasher.update(str(Account_ID).encode())
+    hasher.update(str(account_type).encode())
+    hasher.update(str(Created_date).encode())
+    hasher.update(str(full_name).encode())
+    hasher.update(str(first_name).encode())
+    hasher.update(str(last_name).encode())
+    hasher.update(str(email).encode())
+    hasher.update(str(dob).encode())
+    hasher.update(str(region).encode())
+    hasher.update(str(country).encode())
 
+    digest = hasher.finalize()
+    print(digest)
+    accountSigned = sign_data(Account_ID, digest)
+    new_user_data = {
+        "account_id": Account_ID,
+        "account_type": account_type,
+        "created_on": str(Created_date),
+        "lastUpdated": str(Created_date),
+        "full_name": full_name,
+        "first_name": first_name,
+        "last_name": last_name,
+        "email": email,
+        "role": role,
+        "permissions": permissions,
+        "title": title,
+        "date_of_birth": dob,
+        "region": region,
+        "country": country,
+        "hashed_password": hashed_password_base64,
+        "public_key": public_key,
+        "signature": accountSigned,
+    }
+    
+    credentials_data.append(new_user_data)
+    
+    save_credentials_to_csv(credentials_data, user_credentials_file)
+    Validated = verify_Account_signature(Account_ID, digest, accountSigned)
+    print(Validated)
+    
+    print("You have registered successfully.")
 
 def login():
-    credentials_data = load_credentials()
+    credentials_data = load_credentials_from_csv(user_credentials_file)
 
     email = input("Enter email address: ").lower()
     password = input("Enter password: ")
 
     for user in credentials_data:
+        #print(user)                                                  #debug
         if user["email"] == email:
             hashed_password = base64.b64decode(user["hashed_password"])
+            account_id = user["account_id"]
+
+            hasher = hashes.Hash(chosen_hash)
+            hasher.update(str(user["account_id"]).encode())
+            hasher.update(str(user["account_type"]).encode())
+            hasher.update(str(user["created_on"]).encode())
+            hasher.update(str(user["full_name"]).encode())
+            hasher.update(str(user["first_name"]).encode())
+            hasher.update(str(user["last_name"]).encode())
+            hasher.update(str(user["email"]).encode())
+            hasher.update(str(user["date_of_birth"]).encode())
+            hasher.update(str(user["region"]).encode())
+            hasher.update(str(user["country"]).encode())
+
+
+            digest = hasher.finalize()
+            print(digest)
+            signature = str(user["signature"]).encode()
+           # print("user account ID", account_id)                    #debug
             if verify_password(password, hashed_password):
-                print("Login successful.")
-                return user
+                if verify_Account_signature(account_id, digest, signature):
+                    print("Login successful.")
+                    return user
+                else:
+                    print("Signature verification failed. Please contact support.")
+                    return None
             else:
-                print("Login Failled.")
+                print("Incorrect password. Please try again.")
                 return None
 
     print("User not found.")
-    
-
     return None
 
-
-""" def create_batch_government_accounts_from_csv(csv_file):
-    #Domain name,Domain type,Agency,Organization name,City,State,Security contact email
-    credentials_data = load_credentials()
-
-    with open(csv_file, 'r') as file:
-        reader = csv.reader(file)
-        next(reader)  # Skip header row
-        for row in reader:
-            domain_name, domain_type, agency, org_name, city, state, security_email = row
-
-            print("domain_name", domain_name, "domain_type", domain_type,"agency", agency, org_name, city, state, security_email )
-
-            Account_ID = str(get_uuid())
-            email = security_email.lower()
-            contact_person = security_email
-            region, country = "North America", "United States"   # Assuming this function provides region and country based on location
-
-            pwd = generate_password()  # You may define a function to generate a random password
-            private_key, public_key = generate_key_pair()
-            hashed_password = hash_password(pwd)
-            hashed_password_base64 = base64.b64encode(hashed_password).decode()
-
-            stored_emails = [user["email"] for user in credentials_data]
-
-            if email in stored_emails:
-                print(f"Email '{email}' is already in use. Skipping this agency.")
-                continue
-
-            credentials_data.append({
-                "account_id": Account_ID,
-                "agency_name": org_name,
-                "contact_person": contact_person,
-                "city": city,
-                "city": state,
-                "email": email,
-                "region": region,
-                "country": country,
-                "hashed_password": hashed_password_base64,
-                "public_key": public_key
-            })
-
-            save_private_key(org_name, private_key)
-
-            with open('agencies.csv', mode='a', newline='') as agencies_file:
-                writer = csv.writer(agencies_file)
-                writer.writerow([agency, pwd])  # Write agency name and plain text password to agencies.csv 
-
-    save_credentials(credentials_data) 
-
-    print("Batch government agency account creation from CSV completed.") """
-
-# Example usage of create_batch_government_accounts_from_csv()
-csv_file_path = os.path.join("CSV", "data", "us_gov_Domains.csv")
-#create_batch_government_accounts_from_csv(csv_file_path)
 
 
 
@@ -551,6 +565,8 @@ def Main_menu():
         user = login()
     elif choice == '2':
         signup("User")
+    elif choice == '3':
+        load_account_data("37f06897-5af0-4312-9b9e-6f713025c465")
     elif choice == '0':
         main()
     else:
@@ -561,10 +577,8 @@ def main():
    # accept_or_exit() # DISABLED DURRING TESTING
     clear_screen()
 
-    private = get_private_key("6596632c-7ea9-4f34-8845-3427e4214b04")
-    accountSigned = sign_data("6596632c-7ea9-4f34-8845-3427e4214b04", "test")
-    print("signature", accountSigned)
-    print(f"private key test: {private}" )
+    Created_date = get_current_date()
+    print(Created_date)
     print_ct("Welcome to the TBD.", colors.TITLE)
     user = None
     while not user:
