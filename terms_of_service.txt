@@ -32,7 +32,7 @@ Third-Party Links
 [Your Company/Platform Name] is not responsible for any content, products, or services provided by third-party websites linked to from the platform.
 
 Age Restriction
-Users must be at least [minimum age] years old to access and use our platform.
+Users must be at least 18 years old to access and use our platform. or
 
 Changes to Terms
 We may update or modify these Terms of Service at any time. Users will be notified of any changes to the terms.

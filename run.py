@@ -10,12 +10,12 @@ import os
 import string
 import uuid
 import random
-from datetime import datetime
+from datetime import datetime, date
 import pyttsx3
+import base64
 
 
 # ANSI escape codes for text colors
-
 class colors:
     RED = '\033[91m'
     GREEN = '\033[92m'
@@ -43,12 +43,12 @@ class colors:
 
 
 engine = pyttsx3.init()
+roles_data_file = "roles_permissions.json"
 
+##### Functions used for displaying, printing, getting, or loading.
 def get_uuid():
     new_uuid = uuid.uuid4()
     return new_uuid
-
-
 
 def clear_screen():
     # For Windows
@@ -59,8 +59,55 @@ def clear_screen():
         _ = os.system('clear')
 
 
+def get_user_full_name(user):
+    return f"{user['full_name']}"
 
-def generate_password(length=12):
+def get_user_email(user):
+    return f"{user['email']}"
+
+def get_user_public_key(user):
+    return f"{user['public_key']}"
+
+def load_private_key_from_file(key_file):
+    with open(key_file, 'r') as file:
+        private_key_pem = file.read()
+    return private_key_pem
+
+
+def get_current_datetime():
+    current_datetime = datetime.now()
+    return current_datetime
+
+current_date_time = get_current_datetime()
+print(f"Current date and time: {current_date_time}")
+
+def get_current_date():
+    current_date = date.today()
+    return current_date
+
+current_date = get_current_date()
+print(f"Current date: {current_date}")
+
+
+def print_ct(text, color):
+    print(f"{color}{text}{colors.END}")
+    #engine.say(text)     #disabled for speed and testing
+    #engine.runAndWait()   #disabled for speed and testing
+
+def get_roles_from_json(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+            return data  # Return the entire roles data dictionary
+    except FileNotFoundError:
+        print("Roles and permissions data file not found.")
+        return None
+
+
+
+##### Encription security and data handling functions ######
+
+def generate_password(length=17):
     characters = string.ascii_letters + string.digits + string.punctuation
     password = ''.join(random.choice(characters) for i in range(length))
     return password
@@ -103,33 +150,81 @@ def verify_password(password, hashed_password):
 def check_names(first_name, last_name, stored_names):
     full_name = f"{first_name} {last_name}"
     new_name = full_name
+    count = 1
+    
     while new_name in stored_names:
-        new_name += "1"
+        new_name = f"{full_name}{count}"
+        count += 1
+    
     return new_name
 
-def save_private_key(full_name, private_key):
+def save_private_key(file_name, private_key):
     private_key_str = private_key
-    with open(f"keys\{full_name}_private_key.pem", "w") as f:
+    with open(f"keys\{file_name}.pem", "w") as f:
         f.write(private_key_str)
+
+def get_private_key(account_id):
+    with open(f"keys\{account_id}.pem", "rb") as key_file:
+        private_key = serialization.load_pem_private_key(
+            key_file.read(),
+            password=None,
+        )
+    return private_key
 
 def save_credentials(credentials_data):
     with open("credentials.json", "w") as f:
         json.dump(credentials_data, f, indent=4)
 
+def sign_data(account_id, data):
+    try:
+        data_bytes = data.encode('utf-8')
+        private_key = get_private_key(account_id)
+        signature = private_key.sign(data_bytes,padding.PSS(mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH),hashes.SHA256())
+        return signature
+    except ValueError as e:
+        print("Error loading private key:", e)
 
-def get_user_full_name(user):
-    return f"{user['full_name']}"
 
-def get_user_email(user):
-    return f"{user['email']}"
-
-def get_user_public_key(user):
-    return f"{user['public_key']}"
-
-def print_ct(text, color):
-    print(f"{color}{text}{colors.END}")
-    #engine.say(text)     #disabled for speed and testing
-    #engine.runAndWait()   #disabled for speed and testing
+def verify_signature(account_id, data, signature):
+    credentials_data = load_credentials()
+    
+    # Find the user with the provided account ID
+    user = next((user for user in credentials_data if user["account_id"] == account_id), None)
+    
+    if user:
+        public_key = user.get("public_key")
+        
+        if public_key:
+            try:
+                public_key_bytes = public_key.encode()
+                public_key_obj = serialization.load_pem_public_key(public_key_bytes)
+                
+                # Convert the data to bytes
+                data_bytes = bytes(data, 'utf-8')
+                
+                # Decode the signature from base64
+                signature_decoded = base64.b64decode(signature.encode())
+                
+                # Verify the signature using the public key
+                public_key_obj.verify(
+                    signature_decoded,
+                    data_bytes,
+                    padding.OAEP(
+                        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                        algorithm=hashes.SHA256(),
+                        label=None
+                    )
+                )
+                return True  # Signature verification successful
+            except Exception as e:
+                print(f"Signature verification failed: {e}")
+                return False
+        else:
+            print("Public key not found for the user.")
+            return False
+    else:
+        print("User not found with the provided account ID.")
+        return False
 
 
 def verify_password(password, hashed_password):
@@ -169,6 +264,21 @@ def print_text_file(file_path):
     except FileNotFoundError:
         print("File not found. Please check the file path and try again.")
 
+def check_permission(user_role, required_permission):
+    roles_permissions = get_roles_permissions()
+
+    if user_role not in roles_permissions:
+        print("Invalid user role.")
+        return False
+
+    user_permissions = roles_permissions[user_role]
+
+    if required_permission in user_permissions:
+        return True
+    else:
+        return False
+
+
 
 def accept_or_exit():
     print_text_file("terms_of_service.txt")
@@ -185,6 +295,16 @@ def accept_or_exit():
         print("Invalid choice. Please type 'accept' to proceed or 'exit' to leave.")
         accept_or_exit()
 
+def display_country_table(data_list):
+    print("{:<30} {:<15}".format("Country Name", "Country Code"))
+    print("-" * 45)
+    for country, region, iso_alpha3 in data_list:
+        print("{:<30} {:<15}".format(country, iso_alpha3))
+
+def get_roles_permissions():
+    with open("roles_permissions.json", "r") as file:
+        roles_permissions = json.load(file)
+    return roles_permissions
 
 
 def get_country_info():
@@ -194,6 +314,8 @@ def get_country_info():
         reader = csv.reader(file)
         next(reader)  # Skip the header row
         data_list = list(reader)
+    
+    display_country_table(data_list)
     
     code_input = input("Enter the three-letter country code: ").upper()
     
@@ -214,38 +336,46 @@ def get_country_info():
 
 
 def calculate_age(dob):
-    today = datetime.date.today()
-    print(today)
-    dob = datetime.strptime(dob, "%Y/%m/%d").date()
-    age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
-    return age
+    try:
+        today = date.today()
+        dob = datetime.strptime(dob, "%Y/%m/%d").date()
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+        return age
+    except ValueError:
+        print("Invalid date format. Please enter the date in the format YYYY/MM/DD.")
+        return None
 
 
 def signup(account_type):
-
+    roles = get_roles_from_json(roles_data_file)
     Account_ID = str(get_uuid())
+    private_key, public_key = generate_key_pair()
+    save_private_key(Account_ID, private_key)
+    roles_permissions = get_roles_permissions()
+    role = "user"
+    role_info = roles[role]
+    permissions = role_info["permissions"]
+    title = role_info["title"]
+    description = role_info["description"]
     first_name = input("Enter first name: ").title()
     last_name = input("Enter last name: ").title()
     email = input("Enter email address: ").lower()
     if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
         print("Invalid email address format. Please try again.")
         return
-    
     dob = input("Enter date of birth (YYYY/MM/DD): ")
-    if not re.match(r"\d{4}/\d{2}/\d{2}", dob):
-        print("Invalid date of birth format. Please use YYYY/MM/DD.")
-        return
     age = calculate_age(dob)
-    if age < 18:
-        print("You must be at least 18 years old to register on this platform.")
-        return
+    if age is not None:
+        # Do age verification and user registration based on age
+        if age < 18:
+            print("You must be at least 18 years old to register on this platform.")
+        else:
+            print("Age verification successful. Proceed with registration.")
     # gets region and country of the user. 
     region, country = get_country_info()
-
     pwd = input("Enter password: ")
     conf_pwd = input("Confirm password: ")
     if conf_pwd == pwd:
-        private_key, public_key = generate_key_pair()
         hashed_password = hash_password(pwd)
         hashed_password_base64 = base64.b64encode(hashed_password).decode()
 
@@ -257,28 +387,51 @@ def signup(account_type):
         if email in stored_emails:
             print("Email is already in use. Please try with a different email.")
             return
-
+        Created_date = get_current_datetime()
         full_name = check_names(first_name, last_name, stored_emails)  # corrected variable name
-
-        credentials_data.append({
-        
+        data = {
             "account_id": Account_ID,
             "account_type": account_type,
+            "created_on": Created_date,
+            "lastUpdated": Created_date,
             "full_name": full_name,
             "first_name": first_name,
             "last_name": last_name,
             "email": email,
+            "role": role,
+            "permissions": permissions,
+            "title": title,
             "date_of_birth": dob,
             "region":region,
             "country":country,
             "hashed_password": hashed_password_base64,
-            "public_key": public_key
+            "public_key": public_key,
+        }
+        data_str = json.dumps(data)
+        accountSigned = sign_data(Account_ID, data_str)
+
+        credentials_data.append({
+            "account_id": Account_ID,
+            "account_type": account_type,
+            "created_on": Created_date,
+            "lastUpdated": Created_date,
+            "full_name": full_name,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+            "role": role,
+            "permissions": permissions,
+            "title": title,
+            "date_of_birth": dob,
+            "region":region,
+            "country":country,
+            "hashed_password": hashed_password_base64,
+            "public_key": public_key,
+            "signature": accountSigned,
         })
 
         with open("credentials.json", "w") as f:
             json.dump(credentials_data, f, indent=4)
-
-        save_private_key(full_name, private_key)
 
         print("You have registered successfully!")
     else:
@@ -309,7 +462,7 @@ def login():
     return None
 
 
-def create_batch_government_accounts_from_csv(csv_file):
+""" def create_batch_government_accounts_from_csv(csv_file):
     #Domain name,Domain type,Agency,Organization name,City,State,Security contact email
     credentials_data = load_credentials()
 
@@ -354,11 +507,11 @@ def create_batch_government_accounts_from_csv(csv_file):
 
             with open('agencies.csv', mode='a', newline='') as agencies_file:
                 writer = csv.writer(agencies_file)
-                writer.writerow([agency, pwd])  # Write agency name and plain text password to agencies.csv
+                writer.writerow([agency, pwd])  # Write agency name and plain text password to agencies.csv 
 
-    save_credentials(credentials_data)
+    save_credentials(credentials_data) 
 
-    print("Batch government agency account creation from CSV completed.")
+    print("Batch government agency account creation from CSV completed.") """
 
 # Example usage of create_batch_government_accounts_from_csv()
 csv_file_path = os.path.join("CSV", "data", "us_gov_Domains.csv")
@@ -386,39 +539,36 @@ def company_menu(user):
 
 
 
-def display_menu():
+def Main_menu():
     print_ct("Welcome to the registration portal.", colors.TITLE)
     print_ct("Please select your account type:", colors.MENU)
-    print_ct("1. Individual NOT a PUBLIC OFFICIAL ", colors.MENU)
-    print_ct("2. Government OFFICIAL", colors.MENU)
-    print_ct("4. return to main menu", colors.MENU)
-    choice = input("Enter your choice (1/2/3/4): ")
+    print_ct("1. Login ", colors.MENU)
+    print_ct("2. Register as user", colors.MENU)
+    print_ct("0. return to main menu", colors.MENU)
+    choice = input("Enter your choice (1/2/3/0): ")
     
     if choice == '1':
-        signup("individual")
+        user = login()
     elif choice == '2':
-        signup("gov_Official")
-    elif choice == '4':
+        signup("User")
+    elif choice == '0':
         main()
     else:
         print("Invalid choice. Please select a valid option.")
 
 def main():
     clear_screen()
-    accept_or_exit()
+   # accept_or_exit() # DISABLED DURRING TESTING
     clear_screen()
+
+    private = get_private_key("6596632c-7ea9-4f34-8845-3427e4214b04")
+    accountSigned = sign_data("6596632c-7ea9-4f34-8845-3427e4214b04", "test")
+    print("signature", accountSigned)
+    print(f"private key test: {private}" )
     print_ct("Welcome to the TBD.", colors.TITLE)
     user = None
     while not user:
-        choice = input("Do you want to login,sign up or exit? (login/signup/exit): ")
-        if choice.lower() == "login":
-            user = login()
-        elif choice.lower() == "signup":
-            display_menu()  # Display account type selection menu
-        elif choice.lower() == "exit":
-            exit()
-        else:
-            print_ct("Invalid choice. Please try again.", colors.WARNING)
+        Main_menu()  # Display account type selection menu
 
     # Add code here to execute other programs that require authentication
     print(get_user_full_name(user))

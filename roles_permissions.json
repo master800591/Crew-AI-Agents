@@ -1,0 +1,122 @@
+{
+    "user": {
+        "title": "User",
+        "description": "Standard user account role with basic access rights",
+        "permissions": []
+    },
+    "founder": {
+        "title": "Founder",
+        "description": "Role for founders or owners of the server with ultimate control",
+        "permissions": [
+            {
+                "name": "manage_server",
+                "description": "Manage all aspects of the server",
+                "priority": 1
+            },
+            {
+                "name": "approve_requests",
+                "description": "Approve requests submitted by users",
+                "priority": 2
+            },
+            {
+                "name": "view_analytics",
+                "description": "View server analytics and performance data",
+                "priority": 3
+            }
+        ]
+    },
+    "moderator": {
+        "title": "Moderator",
+        "description": "Role for moderators who oversee server activities and enforce rules",
+        "permissions": [
+            {
+                "name": "monitor_chat",
+                "description": "Monitor and moderate chat activity",
+                "priority": 1
+            },
+            {
+                "name": "manage_reports",
+                "description": "Manage reported content and issues",
+                "priority": 2
+            },
+            {
+                "name": "enforce_rules",
+                "description": "Enforce server rules and guidelines",
+                "priority": 3
+            }
+        ]
+    },
+    "admin": {
+        "title": "Administrator",
+        "description": "Role for server administrators with full access rights",
+        "permissions": [
+            {
+                "name": "manage_users",
+                "description": "Manage user accounts on the server",
+                "priority": 1
+            },
+            {
+                "name": "manage_permissions",
+                "description": "Manage permissions and roles on the server",
+                "priority": 2
+            },
+            {
+                "name": "manage_config",
+                "description": "Manage server configurations and settings",
+                "priority": 3
+            },
+            {
+                "name": "manage_logs",
+                "description": "View and manage server logs",
+                "priority": 4
+            }
+        ]
+    },
+    "developer": {
+        "title": "Developer",
+        "description": "Role for developers with access to development tools and resources",
+        "permissions": [
+            {
+                "name": "access_codebase",
+                "description": "Access the server codebase and repositories",
+                "priority": 1
+            },
+            {
+                "name": "manage_dependencies",
+                "description": "Install and manage dependencies for projects",
+                "priority": 2
+            },
+            {
+                "name": "deploy_changes",
+                "description": "Deploy code changes to the server",
+                "priority": 3
+            },
+            {
+                "name": "debug_applications",
+                "description": "Debug applications running on the server",
+                "priority": 4
+            }
+        ]
+    },
+    "operator": {
+        "title": "Operator",
+        "description": "Role for server operators with monitoring and maintenance capabilities",
+        "permissions": [
+            {
+                "name": "monitor_performance",
+                "description": "Monitor server performance and resource usage",
+                "priority": 1
+            },
+            {
+                "name": "perform_backups",
+                "description": "Perform regular backups of server data",
+                "priority": 2
+            },
+            {
+                "name": "manage_security",
+                "description": "Manage server security measures and configurations",
+                "priority": 3
+            }
+        ]
+    }
+}
