@@ -2,16 +2,69 @@ from crewai import Agent
 import os
 from langchain_community.llms import Ollama
 
-Debug=True
+Debug = True
 
-ollama_openhermes = Ollama(model="openhermes")
-ollama_solar = Ollama(model="solar")
-ollama_alfred = Ollama(model="alfred")
-ollama_llama_pro = Ollama(model="llama-pro")
-ollama_llama2_uncensored = Ollama(model="llama2-uncensored")
-ollama_stable_code = Ollama(model="stable-code")
-ollama_nomic_embed = Ollama(model="nomic-embed-text")
-ollama_codellama = Ollama(model="codellama")
+# Initialize Ollama models with error handling
+# Using common models that are more likely to be available
+try:
+    # Primary models - commonly available
+    ollama_llama2 = Ollama(model="llama2")
+    ollama_codellama = Ollama(model="codellama")
+    
+    # Secondary models - may not be available
+    try:
+        ollama_llama2_uncensored = Ollama(model="llama2-uncensored")
+    except:
+        ollama_llama2_uncensored = ollama_llama2  # fallback
+    
+    try:
+        ollama_solar = Ollama(model="solar")
+    except:
+        ollama_solar = ollama_llama2  # fallback
+    
+    # Additional models with fallbacks
+    try:
+        ollama_openhermes = Ollama(model="openhermes")
+    except:
+        ollama_openhermes = ollama_llama2
+        
+    try:
+        ollama_alfred = Ollama(model="alfred")
+    except:
+        ollama_alfred = ollama_llama2
+        
+    try:
+        ollama_llama_pro = Ollama(model="llama-pro")
+    except:
+        ollama_llama_pro = ollama_llama2
+        
+    try:
+        ollama_stable_code = Ollama(model="stable-code")
+    except:
+        ollama_stable_code = ollama_codellama
+        
+    try:
+        ollama_nomic_embed = Ollama(model="nomic-embed-text")
+    except:
+        ollama_nomic_embed = ollama_llama2
+
+except Exception as e:
+    print(f"Warning: Could not initialize Ollama models: {e}")
+    print("Using placeholder models - you may need to install Ollama and pull models first")
+    # Create placeholder objects that won't crash
+    class PlaceholderLLM:
+        def __init__(self, model_name):
+            self.model_name = model_name
+            
+    ollama_llama2 = PlaceholderLLM("llama2")
+    ollama_codellama = PlaceholderLLM("codellama")
+    ollama_llama2_uncensored = PlaceholderLLM("llama2-uncensored")
+    ollama_solar = PlaceholderLLM("solar")
+    ollama_openhermes = PlaceholderLLM("openhermes")
+    ollama_alfred = PlaceholderLLM("alfred")
+    ollama_llama_pro = PlaceholderLLM("llama-pro")
+    ollama_stable_code = PlaceholderLLM("stable-code")
+    ollama_nomic_embed = PlaceholderLLM("nomic-embed-text")
 
 class CustomAgents:
     def __init__(self):
